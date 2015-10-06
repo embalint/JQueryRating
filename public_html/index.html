@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style>
+            body {
+                font-family: Verdana;
+            }
+            h1, h2, h3 {
+                color: darkblue;
+            }
+            .rating-circle {
+                height: 2em;
+                width: 2em;
+                border: .1em solid black;
+                border-radius: 1.1em;
+                display: inline-block;
+                margin: 0;
+                padding: .1em;
+            }
+
+            .rating-hover {
+                background-color: yellow;
+            }
+
+            .rating-chosen {
+                background-color: green;
+            }
+        </style>
+        <script src="jquery-2.1.4.min.js"></script>
+
+    </head>
+    <body>
+        <h1>Contoso Web Developer Conference</h1>
+        <h2>Finding elements using jQuery</h2>
+        <div>This session is about identifying elements using jQuery methods and selectors.</div>
+        <h3>Rate this session</h3>
+        <div id="rating-container" max-value="5"></div>
+
+        <div>
+            <label for="max-value">Enter max value:</label>
+            <input type="text" id="max-value" />
+            <button type="button" id="update-max-value">Update max value</button>
+        </div>
+        <button type="button" id="save-rating">Save rating</button>
+        <div id="output"></div>
+
+        <script>
+            var min;
+            var max;
+            var maxi;
+            var index;
+            $(function () {
+                var m = $('#rating-container').attr('max-value');
+
+                for (i = 0; i < m; i++) {
+                    $('#rating-container').append('<div class="rating-circle"></div>');
+                }
+                $('#update-max-value').click(function () {
+                    max = $('#max-value').val();
+                    $('.rating-circle').remove()
+                    for (i = 0; i < max; i++) {
+                        $('#rating-container').append('<div class="rating-circle"></div>');
+                    }
+                });
+
+                $('#rating-container').delegate('.rating-circle', 'mouseenter', function () {
+                    $('.rating-circle').removeClass("rating-chosen");
+                    $(this).addClass("rating-hover");
+                    $(this).prevAll().addClass("rating-hover");
+
+
+                });
+                $('#rating-container').delegate('.rating-circle', 'mouseleave', function () {
+                    $(this).removeClass("rating-hover");
+                    $(this).prevAll().removeClass("rating-hover");
+                    var proba = $("#rating-container > .rating-circle");
+                    for (var i = 0; i <= min; i++) {
+                        proba.eq(i).addClass("rating-chosen");
+                    }
+
+                });
+
+                $('#rating-container').delegate('.rating-circle', 'click', function () {
+                    index = $("#rating-container > .rating-circle");
+                    min = $(this).index();
+                    $('.rating-circle').removeClass("rating-chosen");
+                    $(this).addClass("rating-chosen");
+                    $(this).prevAll().addClass("rating-chosen");
+
+                });
+
+                $('#save-rating').click(function () {
+
+                    if ($('#max-value').val() == "")
+                    {
+                        maxi = 5;
+                    }
+                    else {
+                        maxi = max;
+                    }
+                    if (min == null)
+                    {
+                        $('#output').text('You didnt chose rating');
+                    }
+                    else {
+                        $('#output').text('You chose ' + (min + 1) + ' out of ' + maxi);
+                    }
+
+                });
+
+            });
+        </script>
+    </body>
+</html>
